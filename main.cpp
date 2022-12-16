@@ -6,7 +6,7 @@
 /* Definições da câmera */
 #define y_min 60
 #define ro_min 120
-#define MAX_NO_TEXTURES 4
+#define MAX_NO_TEXTURES 6
 #define CUBE_TEXTURE 0
 
 GLuint texture_id[MAX_NO_TEXTURES];
@@ -20,15 +20,23 @@ void initTexture (void)
 {
 	glBindTexture ( GL_TEXTURE_2D, texture_id[0] );
 	image_t temp_image0;
-	tgaLoad  ( "textura_escritura2.tga", &temp_image0, TGA_FREE | TGA_LOW_QUALITY );
+	tgaLoad  ( "textura_escrituraG.tga", &temp_image0, TGA_FREE | TGA_LOW_QUALITY );
 	
 	glBindTexture ( GL_TEXTURE_2D, texture_id[1] );
 	image_t temp_image1;
-	tgaLoad  ( "lado_escritura.tga", &temp_image1, TGA_FREE | TGA_LOW_QUALITY );
+	tgaLoad  ( "lado_esq.tga", &temp_image1, TGA_FREE | TGA_LOW_QUALITY );
 	
 	glBindTexture ( GL_TEXTURE_2D, texture_id[2] );
 	image_t temp_image2;
-	tgaLoad  ( "lado_escritura.tga", &temp_image2, TGA_FREE | TGA_LOW_QUALITY );
+	tgaLoad  ( "frente_lado.tga", &temp_image2, TGA_FREE | TGA_LOW_QUALITY );
+	
+	glBindTexture ( GL_TEXTURE_2D, texture_id[3] );
+	image_t temp_image3;
+	tgaLoad  ( "simbolo_marteloG.tga", &temp_image3, TGA_FREE | TGA_LOW_QUALITY );
+	
+	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
+	image_t temp_image4;
+	tgaLoad  ( "martelo_cimaG.tga", &temp_image4, TGA_FREE | TGA_LOW_QUALITY );
 	
 }
 void make_tex(void){
@@ -40,10 +48,12 @@ void make_tex(void){
 		}
 	}
    
-    glGenTextures (3, texture_id);
+    glGenTextures (5, texture_id);
 	glBindTexture ( GL_TEXTURE_2D, texture_id[0] );
 	glBindTexture ( GL_TEXTURE_2D, texture_id[1] );
 	glBindTexture ( GL_TEXTURE_2D, texture_id[2] );
+	glBindTexture ( GL_TEXTURE_2D, texture_id[3] );
+	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, (const GLvoid *) data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -58,11 +68,11 @@ void drawFirst(){
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glBindTexture ( GL_TEXTURE_2D, texture_id[2] );
 	glBegin(GL_POLYGON);
-		
-		glTexCoord2f(0.0, 0.0);glVertex3f(-1.68,1.77,2); //Ponto A
-		glTexCoord2f(1.0, 0.0);glVertex3f(-1.68,-1.77,2); //Ponto C
-		glTexCoord2f(1.0, 1.0);glVertex3f(1.68, -1.77,2); //Ponto D
-		glTexCoord2f(0.0, 1.0);glVertex3f(1.68, 1.77,2); // Ponto B
+		//Parte de cima
+		glTexCoord2f(1.0, 0.0);glVertex3f(-1.68,1.77,2); //Ponto A
+		glTexCoord2f(0.0, 0.0);glVertex3f(-1.68,-1.77,2); //Ponto C
+		glTexCoord2f(0.0, 1.0);glVertex3f(1.68, -1.77,2); //Ponto D
+		glTexCoord2f(1.0, 1.0);glVertex3f(1.68, 1.77,2); // Ponto B
 	glEnd();
 	
 	glBegin(GL_POLYGON);
@@ -82,7 +92,7 @@ void drawFirst(){
 	glDisable(GL_TEXTURE_2D); 
 	
 	glBegin(GL_POLYGON);
-	//Parte de Baixo
+	//Parte de Baixo antes do meio do martelo
 		glVertex3f(-1.8,2.2,1); //Ponto I 
 		glVertex3f(-2.3,1.7,1); //Ponto J 
 		glVertex3f(-2.3,-1.7,1); //Ponto P
@@ -158,7 +168,78 @@ void drawFirst(){
 		glTexCoord2f(0.0, 1.0);glVertex3f(1.8, -2.2,1); //Ponto M 
 	glEnd();
 	
+	//meio do martelo
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.0, 0.0);glVertex3f(-2.3,1.7,1); //Ponto J
+		glTexCoord2f(1.0, 0.0);glVertex3f(-2.3,-1.7,1); //Ponto P
+		glTexCoord2f(1.0, 1.0);glVertex3f(-2.3,-1.7,-6); //Ponto P
+		glTexCoord2f(0.0, 1.0);glVertex3f(-2.3,1.7,-6); //Ponto J
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.0, 0.0);glVertex3f(-2.3,-1.7,1); //Ponto P 
+		glTexCoord2f(1.0, 0.0);glVertex3f(-1.8,-2.2,1); //Ponto O
+		glTexCoord2f(1.0, 1.0);glVertex3f(-1.8,-2.2,-6); //Ponto O
+		glTexCoord2f(0.0, 1.0);glVertex3f(-2.3,-1.7,-6); //Ponto P 
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.0, 0.0);glVertex3f(-1.8,2.2,1); //Ponto I
+		glTexCoord2f(1.0, 0.0);glVertex3f(-2.3,1.7,1); //Ponto J
+		glTexCoord2f(1.0, 1.0);glVertex3f(-2.3,1.7,-6); //Ponto J
+		glTexCoord2f(0.0, 1.0);glVertex3f(-1.8,2.2,-6); //Ponto I
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.0, 0.0);glVertex3f(2.3,1.7,1); //Ponto L
+		glTexCoord2f(1.0, 0.0);glVertex3f(1.8,2.2,1); //Ponto K
+		glTexCoord2f(1.0, 1.0);glVertex3f(1.8,2.2,-6); //Ponto K
+		glTexCoord2f(0.0, 1.0);glVertex3f(2.3,1.7,-6); //Ponto L
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.0, 0.0);glVertex3f(1.8, -2.2,1); //Ponto M 
+		glTexCoord2f(1.0, 0.0);glVertex3f(2.3,-1.7,1); //Ponto N
+		glTexCoord2f(1.0, 1.0);glVertex3f(2.3,-1.7,-6); //Ponto N
+		glTexCoord2f(0.0, 1.0);glVertex3f(1.8, -2.2,-6); //Ponto M 
+	glEnd();
+	
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.0, 0.0);glVertex3f(-1.8,-2.2,1); //Ponto O
+		glTexCoord2f(1.0, 0.0);glVertex3f(1.8, -2.2,1); //Ponto M
+		glTexCoord2f(1.0, 1.0);glVertex3f(1.8, -2.2,-6); //Ponto M
+		glTexCoord2f(0.0, 1.0);glVertex3f(-1.8,-2.2,-6); //Ponto O
+	glEnd();
+	
 	glDisable(GL_TEXTURE_2D); 
+	
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glBindTexture ( GL_TEXTURE_2D, texture_id[3] );
+	
+	glBegin(GL_POLYGON);
+		glTexCoord2f(0.0, 0.0);glVertex3f(2.3,1.7,-6); //Ponto L
+		glTexCoord2f(1.0, 0.0);glVertex3f(2.3,1.7,1); //Ponto L
+		glTexCoord2f(1.0, 1.0);glVertex3f(2.3,-1.7,1); //Ponto N
+		glTexCoord2f(0.0, 1.0);glVertex3f(2.3,-1.7,-6); //Ponto N
+	glEnd();
+	glDisable(GL_TEXTURE_2D); 
+	
+	
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
+	
+	glBegin(GL_POLYGON);
+		glTexCoord2f(1.0, 0.0);glVertex3f(-1.8,2.2,1); //Ponto I
+		glTexCoord2f(1.0, 1.0);glVertex3f(-1.8,2.2,-6); //Ponto I
+		glTexCoord2f(0.0, 1.0);glVertex3f(1.8,2.2,-6); //Ponto K
+		glTexCoord2f(0.0, 0.0);glVertex3f(1.8,2.2,1); //Ponto K
+	glEnd();
+	
+	glDisable(GL_TEXTURE_2D); 
+	
+	
 	
 }
 

@@ -19,14 +19,14 @@ GLfloat cor_luz0[]        = { 2.0, 2.0, 2.0, 1.0};  // componentes de luz para r
 GLfloat cor_luz0_amb[]    = { 0.3, 0.3, 0.3, 1.0}; 
 GLfloat mat_a_brilho[]    = { 50.0 };
 
-GLUquadric* sphere = gluNewQuadric();
+GLUquadric* cylinder = gluNewQuadric();
 
 
 GLuint texture_id[MAX_NO_TEXTURES];
 
 
 float eyex = 0, eyey = y_min, eyez = ro_min;
-float angle = 0;
+float angle = 0,anglex = 0,anglez = 0;
 int aux=0;
 
 void initTexture (void)
@@ -49,7 +49,7 @@ void initTexture (void)
 	
 	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
 	image_t temp_image4;
-	tgaLoad  ( "tampaG.tga", &temp_image4, TGA_FREE | TGA_LOW_QUALITY );
+	tgaLoad  ( "cabo_marteloPG.tga", &temp_image4, TGA_FREE | TGA_LOW_QUALITY );
 	
 }
 void make_tex(void){
@@ -259,26 +259,52 @@ void drawFirst(){
 
 }
 void drawTampa(){
-	glEnable(GL_TEXTURE_2D);
+//	glEnable(GL_TEXTURE_2D);
 //	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 //	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
-	color(0.6471,0.6471,0.6314);
-	gluQuadricDrawStyle(sphere, GLU_FILL);
+
+//	gluQuadricDrawStyle(sphere, GLU_SILHOUETTE);
+//    glBindTexture(GL_TEXTURE_2D, texture_id[4]);
+//    gluQuadricTexture(sphere, GL_TRUE);
+//    gluQuadricNormals(sphere, GLU_SMOOTH);
+//    gluDisk(sphere, 5, 5,64,1);
+//	//gluDisk(sphere, 0.0, 1.5, 64, 1);
+//	
+//	glMaterialfv(GL_FRONT, GL_SHININESS, mat_a_brilho); 
+//	
+//	glDisable(GL_TEXTURE_2D); 
+	//color(0.4434,0.4434,0.4353);
+	color(0.59,0.62,0.67);
+	drawCircle(1.5,1);
+	
+	
+}
+void drawBaixoTampa(){
+	drawCustomCylinder(1.5, 1.5, 1, 0, 360);
+}
+void drawTampaCabo(){
+	color(0.59,0.62,0.67);
+	drawCircle(0.5,1);
+}
+void drawCabo(){
+	color(0.79,0.83,0.79);
+	glEnable(GL_TEXTURE_2D);
+	
+//	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+//	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
+	gluQuadricDrawStyle(cylinder, GLU_FILL);
     glBindTexture(GL_TEXTURE_2D, texture_id[4]);
-    gluQuadricTexture(sphere, GL_TRUE);
-    gluQuadricNormals(sphere, GLU_SMOOTH);
-    gluDisk(sphere, 5, 5,64,1);
+    //color(0.4434,0.4434,0.4353);
+    gluQuadricTexture(cylinder, GL_TRUE);
+    gluQuadricNormals(cylinder, GLU_SMOOTH);
+    gluCylinder(cylinder,0.5,0.5,8,64,64);
 	//gluDisk(sphere, 0.0, 1.5, 64, 1);
 	
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_a_brilho); 
 	
-	glDisable(GL_TEXTURE_2D); 
-	
-}
-void drawCabo(){		
+	glDisable(GL_TEXTURE_2D); 		
 	//gluCylinder
-	color(0.1412,0.1334,0.1334);
-	drawCustomCylinder(1.5, 1.5, 1, 0, 360);
+	
 }
 
 void display(void)
@@ -294,9 +320,8 @@ void display(void)
     /* Define a posição do observador */
 	gluLookAt(eyex, eyey, eyez, 0, 0, 0, 0, 1, 0);
 	glRotatef(angle, 0,1,0);
-    
-    	//glBegin(GL_LINE_LOOP);
-    //glScalef(-0.8,0.8,-0.8);
+	glRotatef(anglex, 1,0,0);
+	glRotatef(anglez, 0,0,1);
     
     glPushMatrix();
     	glScalef(8,8,8);
@@ -315,14 +340,26 @@ void display(void)
 	    
 	    glTranslatef(0,1.26,2.5);
 	    glPushMatrix();
-	    	drawCabo();
+	    	drawBaixoTampa();
 	    glPopMatrix();
-	    
-	    glTranslatef(0,1,0);
+	    glTranslatef(0,1.0,0);
 	    glPushMatrix();
 	    	glRotatef(90,1,0,0);
 	    	drawTampa();
 	    glPopMatrix();
+	    
+	    glTranslatef(0,-11.7,0);
+	    glPushMatrix();
+	    	glRotatef(-90,1,0,0);
+	    	drawCabo();
+	    glPopMatrix();
+	    
+	    glPushMatrix();
+	    	glRotatef(-90,1,0,0);
+	    	drawTampaCabo();
+	    glPopMatrix();
+	    
+
 	glPopMatrix();
 	//Executa os comandos OpenGL 
 	glFlush();
@@ -353,14 +390,36 @@ void key(unsigned char key, int x, int y) {
 		case 27:
 			exit(0);
 			break;
-		case 'm': /* e key rotates at elbow */
+		case 'y': /* e key rotates at elbow */
 	 	 aux = (int) (angle + 5);
 		 angle = aux % 360;
 		 glutPostRedisplay();
 		 break;
-		case 'M': /* e key rotates at elbow */
+		case 'Y': /* e key rotates at elbow */
 	 	 aux = (int) (angle - 5);
 		 angle = aux % 360;
+		 glutPostRedisplay();
+		 break;
+		 
+		case 'x': /* e key rotates at elbow */
+	 	 aux = (int) (anglex + 5);
+		 anglex = aux % 360;
+		 glutPostRedisplay();
+		 break;
+		case 'X': /* e key rotates at elbow */
+	 	 aux = (int) (anglex - 5);
+		 anglex = aux % 360;
+		 glutPostRedisplay();
+		 break;
+		 
+		case 'z': /* e key rotates at elbow */
+	 	 aux = (int) (anglez + 5);
+		 anglez = aux % 360;
+		 glutPostRedisplay();
+		 break;
+		case 'Z': /* e key rotates at elbow */
+	 	 aux = (int) (anglez - 5);
+		 anglez = aux % 360;
 		 glutPostRedisplay();
 		 break;
 			
@@ -374,7 +433,7 @@ void init() {
 	glEnable(GL_DEPTH_TEST); // Enables Depth Testing
 	make_tex();
     initTexture ();
-    sphere = gluNewQuadric();
+    //sphere = gluNewQuadric();
     glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH); // Enables Smooth Color Shading
 }

@@ -1,8 +1,12 @@
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "glut.h"
 #include "geometry.h"
-#include <stdio.h>
 #include <stdlib.h>
-#include <GL/glut.h>
 #include "tgaload.h"
 #include "draw_wing.hpp"
 /* Definições da câmera */
@@ -10,6 +14,12 @@
 #define ro_min 120
 #define MAX_NO_TEXTURES 6
 #define CUBE_TEXTURE 0
+
+GLfloat cor_luz0[]        = { 2.0, 2.0, 2.0, 1.0};  // componentes de luz para reflexão difusa e especular
+GLfloat cor_luz0_amb[]    = { 0.3, 0.3, 0.3, 1.0}; 
+GLfloat mat_a_brilho[]    = { 50.0 };
+
+GLUquadric* sphere = gluNewQuadric();
 
 
 GLuint texture_id[MAX_NO_TEXTURES];
@@ -39,7 +49,7 @@ void initTexture (void)
 	
 	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
 	image_t temp_image4;
-	tgaLoad  ( "martelo_cimaG.tga", &temp_image4, TGA_FREE | TGA_LOW_QUALITY );
+	tgaLoad  ( "tampaG.tga", &temp_image4, TGA_FREE | TGA_LOW_QUALITY );
 	
 }
 void make_tex(void){
@@ -223,6 +233,13 @@ void drawFirst(){
 		glTexCoord2f(1.0, 1.0);glVertex3f(1.8, -2.2,-6); //Ponto M
 		glTexCoord2f(0.0, 1.0);glVertex3f(-1.8,-2.2,-6); //Ponto O
 	glEnd();
+		glBegin(GL_POLYGON);//parte de cima
+		glTexCoord2f(1.0, 0.0);glVertex3f(-1.8,2.2,1); //Ponto I
+		glTexCoord2f(1.0, 1.0);glVertex3f(-1.8,2.2,-6); //Ponto I
+		glTexCoord2f(0.0, 1.0);glVertex3f(1.8,2.2,-6); //Ponto K
+		glTexCoord2f(0.0, 0.0);glVertex3f(1.8,2.2,1); //Ponto K
+	glEnd();
+	
 	
 	glDisable(GL_TEXTURE_2D); 
 	
@@ -230,31 +247,38 @@ void drawFirst(){
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	glBindTexture ( GL_TEXTURE_2D, texture_id[3] );
 	
-	glBegin(GL_POLYGON);
+	glBegin(GL_POLYGON); //lado com simbolo
 		glTexCoord2f(0.0, 0.0);glVertex3f(2.3,1.7,-6); //Ponto L
 		glTexCoord2f(1.0, 0.0);glVertex3f(2.3,1.7,1); //Ponto L
 		glTexCoord2f(1.0, 1.0);glVertex3f(2.3,-1.7,1); //Ponto N
 		glTexCoord2f(0.0, 1.0);glVertex3f(2.3,-1.7,-6); //Ponto N
 	glEnd();
+	
+
 	glDisable(GL_TEXTURE_2D); 
-	
-	
-	glEnable(GL_TEXTURE_2D);
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
-	
-	glBegin(GL_POLYGON);
-		glTexCoord2f(1.0, 0.0);glVertex3f(-1.8,2.2,1); //Ponto I
-		glTexCoord2f(1.0, 1.0);glVertex3f(-1.8,2.2,-6); //Ponto I
-		glTexCoord2f(0.0, 1.0);glVertex3f(1.8,2.2,-6); //Ponto K
-		glTexCoord2f(0.0, 0.0);glVertex3f(1.8,2.2,1); //Ponto K
-	glEnd();
-	
-	glDisable(GL_TEXTURE_2D); 
+
 }
-void drawCabo(){
-	color(1,0,0);
-	//glutSolidCylinder(3,10,3,2);
+void drawTampa(){
+	glEnable(GL_TEXTURE_2D);
+//	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+//	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
+	color(0.6471,0.6471,0.6314);
+	gluQuadricDrawStyle(sphere, GLU_FILL);
+    glBindTexture(GL_TEXTURE_2D, texture_id[4]);
+    gluQuadricTexture(sphere, GL_TRUE);
+    gluQuadricNormals(sphere, GLU_SMOOTH);
+    gluDisk(sphere, 5, 5,64,1);
+	//gluDisk(sphere, 0.0, 1.5, 64, 1);
+	
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_a_brilho); 
+	
+	glDisable(GL_TEXTURE_2D); 
+	
+}
+void drawCabo(){		
+	//gluCylinder
+	color(0.1412,0.1334,0.1334);
+	drawCustomCylinder(1.5, 1.5, 1, 0, 360);
 }
 
 void display(void)
@@ -289,8 +313,15 @@ void display(void)
 	    	drawPonta();
 	    glPopMatrix();
 	    
+	    glTranslatef(0,1.26,2.5);
 	    glPushMatrix();
 	    	drawCabo();
+	    glPopMatrix();
+	    
+	    glTranslatef(0,1,0);
+	    glPushMatrix();
+	    	glRotatef(90,1,0,0);
+	    	drawTampa();
 	    glPopMatrix();
 	glPopMatrix();
 	//Executa os comandos OpenGL 
@@ -343,6 +374,7 @@ void init() {
 	glEnable(GL_DEPTH_TEST); // Enables Depth Testing
 	make_tex();
     initTexture ();
+    sphere = gluNewQuadric();
     glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH); // Enables Smooth Color Shading
 }

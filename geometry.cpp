@@ -90,5 +90,18 @@ void drawRings(float radius, float gap) {
 		}
 	glEnd();
 }
+float rad(float angle) {
+	return (angle / 180) * PI;
+}
+void drawCustomCylinder(float base, float top, float height, float startingAlpha, float endingAlpha) {
+	glPopMatrix();
+		glBegin(GL_LINE_LOOP);
+			for (float alpha = rad(startingAlpha); alpha <= rad(endingAlpha); alpha += 0.001) {
+				point(sin(alpha) * base, 0, cos(alpha) * base);
+				point(sin(alpha) * top, height, cos(alpha) * top);
+			}
+		glEnd();
+	glPushMatrix();
+}
 
 #endif

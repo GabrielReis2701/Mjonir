@@ -14,4 +14,6 @@ void drawSphereSection(float startingTheta, float startingPhi, float endingTheta
 
 void drawRings(float radius, float gap);
 
+void drawCustomCylinder(float base, float top, float height, float startingAlpha, float endingAlpha);
+
 #endif

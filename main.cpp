@@ -306,6 +306,11 @@ void drawCabo(){
 	//gluCylinder
 	
 }
+void drawCorda(){
+	color(1,0,0);
+	draw_wing(0);
+	
+}
 
 void display(void)
 {
@@ -324,7 +329,7 @@ void display(void)
 	glRotatef(anglez, 0,0,1);
     
     glPushMatrix();
-    	glScalef(8,8,8);
+    	glScalef(5,5,5);
     	glPushMatrix();
 	    	drawPonta();
 	    glPopMatrix();
@@ -359,6 +364,12 @@ void display(void)
 	    	drawTampaCabo();
 	    glPopMatrix();
 	    
+	    glTranslatef(1,-4.2,0);
+		glPushMatrix();
+			//glRotatef(10,1,0,0);
+			glScalef(0.7,6,1);
+	    	drawCorda();
+	    glPopMatrix();
 
 	glPopMatrix();
 	//Executa os comandos OpenGL 

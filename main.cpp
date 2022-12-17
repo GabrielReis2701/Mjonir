@@ -254,7 +254,7 @@ void drawFirst(){
 }
 void drawCabo(){
 	color(1,0,0);
-	glutSolidCylinder(3,10,3,2);
+	//glutSolidCylinder(3,10,3,2);
 }
 
 void display(void)
@@ -367,7 +367,7 @@ int main(int argc, char** argv)
     Determina o tamanho em pixels da
     janela a ser criada
     */
-    glutInitWindowSize (450, 450);
+    glutInitWindowSize (800, 800);
     
     /*
     Estabelece a posicao inicial para criacao da

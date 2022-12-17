@@ -2,12 +2,15 @@
 #include "geometry.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <GL/glut.h>
 #include "tgaload.h"
+#include "draw_wing.hpp"
 /* Definições da câmera */
 #define y_min 60
 #define ro_min 120
 #define MAX_NO_TEXTURES 6
 #define CUBE_TEXTURE 0
+
 
 GLuint texture_id[MAX_NO_TEXTURES];
 
@@ -61,8 +64,8 @@ void make_tex(void){
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL);
 }
 
-//corpo da espada
-void drawFirst(){
+//pontas do martelo
+void drawPonta(){
 	glColor3f(0.4941,0.53726,0.58824);
 	glEnable(GL_TEXTURE_2D);
 	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
@@ -168,6 +171,16 @@ void drawFirst(){
 		glTexCoord2f(0.0, 1.0);glVertex3f(1.8, -2.2,1); //Ponto M 
 	glEnd();
 	
+	glDisable(GL_TEXTURE_2D); 
+}
+
+//meio do martelo
+void drawFirst(){
+	glColor3f(0.4941,0.53726,0.58824);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glBindTexture ( GL_TEXTURE_2D, texture_id[1] );
+	
 	//meio do martelo
 	glBegin(GL_POLYGON);
 		glTexCoord2f(0.0, 0.0);glVertex3f(-2.3,1.7,1); //Ponto J
@@ -238,46 +251,11 @@ void drawFirst(){
 	glEnd();
 	
 	glDisable(GL_TEXTURE_2D); 
-	
-	
-	
 }
-
-//void drawCabo(){
-//	color(0.12,0.14,0.15);
-//	glPushMatrix();
-//		glutSolidSphere( 6, 16, 16 );
-//	glPopMatrix();
-//	
-//	glRotatef(90,0,1,0);
-//	
-//	glPushMatrix();
-//		glScalef(0.5,0.5,12);
-//		glutSolidSphere( 4, 16, 16 );
-//	glPopMatrix();
-//	
-//	glRotatef(-120,1,1,1);
-//	glPushMatrix();
-//		glScalef(1,1,13);
-//		glutSolidSphere( 4, 16, 16 );
-//	glPopMatrix();
-//	
-//	glTranslatef(-45,0,0);
-//	glPushMatrix();
-//		glutSolidSphere( 3, 16, 16 );
-//	glPopMatrix();
-//	
-//	glTranslatef(90,0,0);
-//	glPushMatrix();
-//		glutSolidSphere( 3, 16, 16 );
-//	glPopMatrix();
-//	
-//	glTranslatef(-45,0,-55);
-//	glPushMatrix();
-//		glutSolidSphere( 2, 16, 16 );
-//	glPopMatrix();
-//	
-//}
+void drawCabo(){
+	color(1,0,0);
+	glutSolidCylinder(3,10,3,2);
+}
 
 void display(void)
 {
@@ -297,21 +275,23 @@ void display(void)
     //glScalef(-0.8,0.8,-0.8);
     
     glPushMatrix();
-    glScalef(10,10,10);
+    	glScalef(8,8,8);
+    	glPushMatrix();
+	    	drawPonta();
+	    glPopMatrix();
 	    glPushMatrix();
-	    
-//	    	glTranslatef(0,20,3);
-//	    	glScalef(20,25,5);
-	    	glColor3f (0.65, 0.68, 0.64);
-//	    	glRotatef(-120, 1,1,1);
 	    	drawFirst();
 	    glPopMatrix();
-//	    glTranslatef(0,-65,0);
-//		glScalef(-0.5,0.5,-0.5);
-//		//glRotatef(60)
-//		glPushMatrix();
-//	    	drawCabo();
-//	    glPopMatrix();
+		glTranslatef(0,0,-5);
+		
+		glPushMatrix();
+			glRotatef(180,1,0,0);
+	    	drawPonta();
+	    glPopMatrix();
+	    
+	    glPushMatrix();
+	    	drawCabo();
+	    glPopMatrix();
 	glPopMatrix();
 	//Executa os comandos OpenGL 
 	glFlush();

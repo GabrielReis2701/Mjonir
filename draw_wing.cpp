@@ -19,7 +19,7 @@ void draw_wing(float ang){
     
 	    glPushMatrix();
 		    glTranslatef(0, 0, -4.9);
-		    glBegin(GL_LINE_LOOP);
+		    glBegin(GL_POLYGON);
 			    point(-3.24,2.33,2); //Inicio
 				point(-3.3,1.93,2);
 				point(-3.46,1.51,2);

@@ -21,6 +21,7 @@ GLfloat mat_a_brilho[]    = { 50.0 };
 
 GLUquadric* cylinder = gluNewQuadric();
 
+GLUquadric* sphere = gluNewQuadric();
 
 GLuint texture_id[MAX_NO_TEXTURES];
 
@@ -51,6 +52,10 @@ void initTexture (void)
 	image_t temp_image4;
 	tgaLoad  ( "cabo_marteloPG.tga", &temp_image4, TGA_FREE | TGA_LOW_QUALITY );
 	
+	glBindTexture ( GL_TEXTURE_2D, texture_id[5] );
+	image_t temp_image5;
+	tgaLoad  ( "martelo_cimaG.tga", &temp_image5, TGA_FREE | TGA_LOW_QUALITY );
+	
 }
 void make_tex(void){
     unsigned char data[256][256][3];
@@ -61,12 +66,13 @@ void make_tex(void){
 		}
 	}
    
-    glGenTextures (5, texture_id);
+    glGenTextures (6, texture_id);
 	glBindTexture ( GL_TEXTURE_2D, texture_id[0] );
 	glBindTexture ( GL_TEXTURE_2D, texture_id[1] );
 	glBindTexture ( GL_TEXTURE_2D, texture_id[2] );
 	glBindTexture ( GL_TEXTURE_2D, texture_id[3] );
 	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
+	glBindTexture ( GL_TEXTURE_2D, texture_id[5] );
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, (const GLvoid *) data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -259,23 +265,23 @@ void drawFirst(){
 
 }
 void drawTampa(){
-//	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_2D);
 //	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-//	glBindTexture ( GL_TEXTURE_2D, texture_id[4] );
+//	glBindTexture ( GL_TEXTURE_2D, texture_id[5] );
 
-//	gluQuadricDrawStyle(sphere, GLU_SILHOUETTE);
-//    glBindTexture(GL_TEXTURE_2D, texture_id[4]);
-//    gluQuadricTexture(sphere, GL_TRUE);
-//    gluQuadricNormals(sphere, GLU_SMOOTH);
-//    gluDisk(sphere, 5, 5,64,1);
-//	//gluDisk(sphere, 0.0, 1.5, 64, 1);
-//	
-//	glMaterialfv(GL_FRONT, GL_SHININESS, mat_a_brilho); 
-//	
-//	glDisable(GL_TEXTURE_2D); 
+	gluQuadricDrawStyle(sphere, GLU_FILL);
+    glBindTexture(GL_TEXTURE_2D, texture_id[5]);
+    gluQuadricTexture(sphere, GL_TRUE);
+    gluQuadricNormals(sphere, GLU_SMOOTH);
+    gluSphere(sphere, 1.5,10,10);
+	//gluDisk(sphere, 0.0, 1.5, 64, 1);
+	
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_a_brilho); 
+	
+	glDisable(GL_TEXTURE_2D); 
 	//color(0.4434,0.4434,0.4353);
-	color(0.59,0.62,0.67);
-	drawCircle(1.5,1);
+//	color(0.59,0.62,0.67);
+//	drawCircle(1.5,1);
 	
 	
 }
@@ -347,9 +353,13 @@ void display(void)
 	    glPushMatrix();
 	    	drawBaixoTampa();
 	    glPopMatrix();
+	    
 	    glTranslatef(0,1.0,0);
 	    glPushMatrix();
-	    	glRotatef(90,1,0,0);
+	    	
+	    	glScalef(1,0.1,1);
+	    	glRotatef(177,1,0,0);
+	    	glRotatef(30,0,1,0);
 	    	drawTampa();
 	    glPopMatrix();
 	    
@@ -365,11 +375,12 @@ void display(void)
 	    glPopMatrix();
 	    
 	    glTranslatef(1,-4.2,0);
-		glPushMatrix();
-			//glRotatef(10,1,0,0);
-			glScalef(0.7,6,1);
-	    	drawCorda();
-	    glPopMatrix();
+	    
+//		glPushMatrix();
+//			//glRotatef(10,1,0,0);
+//			glScalef(0.7,6,1);
+//	    	drawCorda();
+//	    glPopMatrix();
 
 	glPopMatrix();
 	//Executa os comandos OpenGL 

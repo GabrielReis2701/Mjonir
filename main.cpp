@@ -27,7 +27,7 @@ GLuint texture_id[MAX_NO_TEXTURES];
 
 
 float eyex = 0, eyey = y_min, eyez = ro_min;
-float angle = 0,anglex = 0,anglez = 0;
+float angle = 0, anglex = 0,anglez = 0,angleMX=-60,angleMY= 0,angleMZ=0;
 int aux=0;
 
 void initTexture (void)
@@ -317,26 +317,9 @@ void drawCorda(){
 	draw_wing(0);
 	
 }
-
-void display(void)
-{
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    /* Limpa o Buffer de Pixels */
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    /* Estabelece a cor da primitiva como preta */
-    glColor3f (1.0, 1.0, 1.0);
-    
-    /* Define a posição do observador */
-	gluLookAt(eyex, eyey, eyez, 0, 0, 0, 0, 1, 0);
-	glRotatef(angle, 0,1,0);
-	glRotatef(anglex, 1,0,0);
-	glRotatef(anglez, 0,0,1);
-    
-    glPushMatrix();
-    	glScalef(5,5,5);
-    	glPushMatrix();
+void drawMartelo(){
+	glPushMatrix();
+		glPushMatrix();
 	    	drawPonta();
 	    glPopMatrix();
 	    glPushMatrix();
@@ -373,24 +356,61 @@ void display(void)
 	    	glRotatef(-90,1,0,0);
 	    	drawTampaCabo();
 	    glPopMatrix();
-	    
-	    glTranslatef(1,-4.2,0);
-	    
-//		glPushMatrix();
-//			//glRotatef(10,1,0,0);
-//			glScalef(0.7,6,1);
-//	    	drawCorda();
-//	    glPopMatrix();
-
 	glPopMatrix();
+}
+
+void display(void)
+{
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    /* Limpa o Buffer de Pixels */
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    /* Estabelece a cor da primitiva como preta */
+    glColor3f (1.0, 1.0, 1.0);
+    
+    /* Define a posição do observador */
+	gluLookAt(eyex, eyey, eyez, 0, 0, 0, 0, 1, 0);
+
+	glTranslatef(angleMX,angleMY,angleMZ);
+    glPushMatrix();
+    	glScalef(2,2,2);
+    	glRotatef(angle, 0,1,0);
+		glRotatef(anglex, 1,0,0);
+		glRotatef(anglez, 0,0,1);
+    	drawMartelo();
+    glPopMatrix();
+    	
+    
 	//Executa os comandos OpenGL 
 	glFlush();
 }
 
 void TimerFunc(int value) {
-	angle += 1; 
-    glutPostRedisplay();
-    glutTimerFunc( 33, TimerFunc, 1);
+	if((angleMX>=-60 && angleMX <0) && (angleMY>=0 && angleMY<40)){
+			angleMX = angleMX +1;
+			angleMY = angleMY +0.646;
+			anglez--;
+		}
+		if((angleMX>=0 && angleMX <60) && (angleMY<=40 && angleMY>0)){
+			angleMX = angleMX +1;
+			angleMY = angleMY -0.648;
+			anglez = anglez -1.84;
+		}
+		if((angleMX<=60 && angleMX >0) && (angleMY<=0 && angleMY>-40)){
+			angleMX = angleMX -1;
+			angleMY = angleMY -0.646;
+			anglez = anglez+4.67;
+		}
+		if((angleMX<=0 && angleMX >-60) && (angleMY>=-40 && angleMY<0)){
+			anglez=anglez-1.84;
+			angleMX = angleMX -1;
+			angleMY = angleMY +0.648;
+//			anglez= anglez+10;
+//			angle=angle+10;
+		}
+	    glutPostRedisplay();
+	    glutTimerFunc( 33, TimerFunc, 1);
 }
 
 void reshape(int width, int height) {
@@ -480,7 +500,7 @@ int main(int argc, char** argv)
     Determina o tamanho em pixels da
     janela a ser criada
     */
-    glutInitWindowSize (800, 800);
+    glutInitWindowSize (1340, 900);
     
     /*
     Estabelece a posicao inicial para criacao da
@@ -505,6 +525,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(key);
+	TimerFunc(1);
     
     /*
     Inicia a execucao do programa OpenGL.
